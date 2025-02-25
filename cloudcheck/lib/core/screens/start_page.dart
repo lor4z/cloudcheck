@@ -1,167 +1,135 @@
 import 'package:flutter/material.dart';
+import 'package:cloudcheck/core/models/weather_model.dart';
+import 'package:cloudcheck/core/services/weather_service.dart';
 
-class StartHome extends StatelessWidget {
+class StartHome extends StatefulWidget {
   const StartHome({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromRGBO(29, 38, 72, 1.0), // Cor inicial do degradê
-                Color.fromRGBO(134, 79, 172, 1.0)
-              ],
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 100),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/images/nuvemChuva.png'),
-                Text(
-                  '19°',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 58,
-                      // fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins'),
-                ),
-                Text(
-                  'Precipitações',
-                  style: TextStyle(
-                      color: Colors.white, fontSize: 20, fontFamily: 'Poppins'),
-                ),
-                Text(
-                  'Max: 24°    Min: 18°',
-                  style: TextStyle(
-                      color: Colors.white, fontSize: 20, fontFamily: 'Poppins'),
-                ),
-                Image.asset('assets/images/House.png'),
-                Container(
-                  // margin:
-                  //     const EdgeInsets.symmetric(horizontal: 0.1, vertical: 1),
-                  padding: EdgeInsets.all(45),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color.fromRGBO(
-                            29, 38, 72, 1.0), // Cor inicial do degradê
-                        Color.fromRGBO(142, 64, 197, 1),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(32),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Hoje',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            'Janeiro, 14',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Divider(
-                        color: Colors.white,
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          WeatherInfo(
-                            temperature: '19°C',
-                            time: '15:00',
-                            // iconPath: 'assets/images/nuvemChuvaP.png',
-                          ),
-                          WeatherInfo(
-                            temperature: '18°C',
-                            time: '16:00',
-                            // iconPath: 'assets/images/nuvemChuvaNoiteP.png',
-                          ),
-                          WeatherInfo(
-                            temperature: '18°C',
-                            time: '17:00',
-                            // iconPath: 'assets/images/nuvemChuvaNoiteP.png',
-                          ),
-                          WeatherInfo(
-                            temperature: '16°C',
-                            time: '18:00',
-                            // iconPath: 'assets/images/nuvemChuvaNoiteP.png',
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  State<StartHome> createState() => _StartHomeState();
 }
 
-class WeatherInfo extends StatelessWidget {
-  final String temperature;
-  final String time;
-  // final String iconPath;
+class _StartHomeState extends State<StartHome> {
+  final WeatherService _weatherService = WeatherService();
+  Weather? _weather;
+  bool _isLoading = true;
 
-  const WeatherInfo({
-    super.key,
-    required this.temperature,
-    required this.time,
-    // required this.iconPath,
-  });
+  @override
+  void initState() {
+    super.initState();
+    _fetchWeather();
+  }
+
+  Future<void> _fetchWeather() async {
+    try {
+      final weatherData = await _weatherService
+          .fetchWeather("São Paulo"); // Mudar para cidade atual depois
+      setState(() {
+        _weather = Weather.fromJson(weatherData);
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      print('Erro ao buscar o clima: $e');
+    }
+  }
+
+  // 🔹 Método para definir a imagem do clima
+  String getWeatherAnimation(String? mainCondition) {
+    if (mainCondition == null) return 'assets/images/sol.json';
+
+    switch (mainCondition.toLowerCase()) {
+      case 'clouds':
+      case 'mist':
+      case 'smoke':
+      case 'haze':
+      case 'dust':
+      case 'fog':
+        return 'assets/images/nublado.json';
+      case 'rain':
+      case 'drizzle':
+      case 'shower rain':
+        return 'assets/images/solChuva.json';
+      case 'thunderstorm':
+        return 'assets/images/chuva.json';
+      case 'clear':
+        return 'assets/images/sol.json';
+      default:
+        return 'assets/images/sol.json';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Image.asset(
-        //   iconPath,
-        // ),
-        Text(
-          temperature,
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 16,
-            color: Colors.white,
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromRGBO(29, 38, 72, 1.0),
+              Color.fromRGBO(134, 79, 172, 1.0),
+            ],
           ),
         ),
-        Text(
-          time,
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 14,
-            color: Colors.white,
-          ),
+        child: Center(
+          child: _isLoading
+              ? CircularProgressIndicator()
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // 🔹 Nome da cidade acima da imagem
+                    Text(
+                      _weather?.cityName ?? "Carregando...",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins',
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+
+                    SizedBox(height: 10), // Espaço entre o texto e a imagem
+
+                    // 🔹 Exibe a imagem de acordo com o clima atual
+                    Image.asset(getWeatherAnimation(_weather?.mainCondition)),
+
+                    Text(
+                      '${_weather?.temperature.round() ?? "--"}°',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 58,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                    Text(
+                      _weather?.mainCondition ?? "Sem informações",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                    Text(
+                      'Max: ${_weather?.maxTemp.round() ?? "--"}° Min: ${_weather?.minTemp.round() ?? "--"}°',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                    Image.asset('assets/images/House.png'),
+                  ],
+                ),
         ),
-      ],
+      ),
     );
   }
 }

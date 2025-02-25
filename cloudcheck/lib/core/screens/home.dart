@@ -1,14 +1,29 @@
+import 'package:cloudcheck/core/screens/start_page.dart';
 import 'package:flutter/material.dart';
 
-class CloudHome extends StatelessWidget {
+class CloudHome extends StatefulWidget {
   const CloudHome({super.key});
 
   @override
+  State<CloudHome> createState() => _CloudHomeState();
+}
+
+class _CloudHomeState extends State<CloudHome> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => StartHome()),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-          body: Container(
+    return Scaffold(
+      body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
@@ -16,8 +31,8 @@ class CloudHome extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromRGBO(29, 38, 72, 1.0), // Cor inicial do degradê
-              Color.fromRGBO(134, 79, 172, 1.0)
+              Color.fromRGBO(29, 38, 72, 1.0),
+              Color.fromRGBO(134, 79, 172, 1.0),
             ],
           ),
         ),
@@ -31,27 +46,29 @@ class CloudHome extends StatelessWidget {
                 height: 650,
               ),
               RichText(
-                  text: TextSpan(children: [
-                TextSpan(
-                  text: 'Cloud',
-                  style: TextStyle(
-                    color: const Color.fromARGB(255, 255, 255, 255),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 40,
+                text: TextSpan(children: [
+                  TextSpan(
+                    text: 'Cloud',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 40,
+                    ),
                   ),
-                ),
-                TextSpan(
-                  text: 'Check',
-                  style: TextStyle(
+                  TextSpan(
+                    text: 'Check',
+                    style: TextStyle(
                       color: Color.fromRGBO(175, 162, 255, 1),
                       fontWeight: FontWeight.bold,
-                      fontSize: 40),
-                )
-              ])),
+                      fontSize: 40,
+                    ),
+                  ),
+                ]),
+              ),
             ],
           ),
         ),
-      )),
+      ),
     );
   }
 }
