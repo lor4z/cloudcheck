@@ -21,22 +21,25 @@ class WeatherService {
   }
 
   Future<String> getCurrentCity() async {
-    // pega a permissão para o usuario
     LocationPermission permission = await Geolocator.checkPermission();
-
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        throw Exception("Permissão de localização negada permanentemente.");
+      }
     }
 
     Position position = await Geolocator.getCurrentPosition(
-        // ignore: deprecated_member_use
-        desiredAccuracy: LocationAccuracy.high);
+      desiredAccuracy: LocationAccuracy.high,
+    );
 
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
 
-    String? city = placemarks[0].locality;
+    if (placemarks.isNotEmpty) {
+      return placemarks[0].locality ?? "Desconhecido";
+    }
 
-    return city ?? "";
+    return "Desconhecido";
   }
 }
