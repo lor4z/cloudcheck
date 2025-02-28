@@ -20,22 +20,26 @@ class Weather {
   });
 
   factory Weather.fromJson(Map<String, dynamic> json) {
+    int timezoneOffset = json['timezone'] ?? 0; // Offset em segundos
+
     return Weather(
       cityName: json['name'] ?? "Desconhecido",
       temperature: (json['main']['temp'] ?? 0.0).toDouble(),
       mainCondition: json['weather'][0]['main'] ?? "N/A",
-      maxTemp:
-          (json['main']['temp_max'] ?? json['main']['temp'] ?? 0.0).toDouble(),
-      minTemp:
-          (json['main']['temp_min'] ?? json['main']['temp'] ?? 0.0).toDouble(),
+      maxTemp: (json['main']['temp_max'] ?? 0.0).toDouble(),
+      minTemp: (json['main']['temp_min'] ?? 0.0).toDouble(),
       sunrise: DateTime.fromMillisecondsSinceEpoch(
-          (json['sys']['sunrise'] ?? 0) * 1000), // Converter Unix timestamp
+        (json['sys']['sunrise'] ?? 0) * 1000,
+        isUtc: true,
+      ).add(Duration(seconds: timezoneOffset)), // Corrige fuso horário
       sunset: DateTime.fromMillisecondsSinceEpoch(
-          (json['sys']['sunset'] ?? 0) * 1000), // Converter Unix timestamp
+        (json['sys']['sunset'] ?? 0) * 1000,
+        isUtc: true,
+      ).add(Duration(seconds: timezoneOffset)), // Corrige fuso horário
     );
   }
 
   String formatTime(DateTime time) {
-    return DateFormat.Hm().format(time); // Formato HH:mm
+    return DateFormat.Hm().format(time.toLocal());
   }
 }
