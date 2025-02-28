@@ -109,9 +109,8 @@ class _StartHomeState extends State<StartHome> {
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Nome da Cidade - Ajustado com FittedBox
                         Padding(
-                          padding: const EdgeInsets.only(top: 50),
+                          padding: const EdgeInsets.only(top: 90),
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
@@ -130,12 +129,12 @@ class _StartHomeState extends State<StartHome> {
                         // Animação do Clima
                         Lottie.asset(
                           getWeatherAnimation(_weather?.mainCondition),
-                          width: 200,
+                          width: 250,
                           height: 200,
                           fit: BoxFit.contain,
                         ),
 
-                        // Temperatura e informações climáticas
+                        // Temperatura
                         Column(
                           children: [
                             Text(
@@ -164,95 +163,107 @@ class _StartHomeState extends State<StartHome> {
                         ),
 
                         // Imagem da Casa
-                        Image.asset(
-                          'assets/images/House.png',
-                          width: 350,
-                        ),
-
-                        // Caixa com horário do sol ajustada
                         Expanded(
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(25),
-                                topRight: Radius.circular(25),
+                          child: Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: [
+                              Positioned(
+                                bottom: 110,
+                                child: Image.asset(
+                                  'assets/images/House.png',
+                                  width: 600,
+                                ),
                               ),
-                              gradient: const LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color.fromRGBO(34, 49, 104, 1),
-                                  Color.fromRGBO(177, 95, 235, 1),
-                                ],
-                              ),
-                            ),
-                            child: Column(
-                              // mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Horários do Sol",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Poppins',
+
+                              // horários do sol
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(25),
+                                      topRight: Radius.circular(25),
+                                    ),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Color.fromRGBO(34, 49, 104, 1),
+                                        Color.fromRGBO(177, 95, 235, 1),
+                                      ],
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize
+                                        .min, // Evita que a caixa ocupe todo o espaço
+                                    children: [
+                                      const Text(
+                                        "Horários do Sol",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 26,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Icon(Icons.wb_sunny,
+                                                  color: Colors.yellow[700],
+                                                  size: 50),
+                                              const Text(
+                                                "Nascer do Sol",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 19,
+                                                  fontFamily: 'Poppins',
+                                                ),
+                                              ),
+                                              Text(
+                                                formatTime(_weather?.sunrise),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            children: [
+                                              Icon(Icons.nightlight_round,
+                                                  color: Colors.orange[300],
+                                                  size: 50),
+                                              const Text(
+                                                "Pôr do Sol",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 19),
+                                              ),
+                                              Text(
+                                                formatTime(_weather?.sunset),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Icon(Icons.wb_sunny,
-                                            color: Colors.yellow[700],
-                                            size: 50),
-                                        const Text(
-                                          "Nascer do Sol",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                            fontFamily: 'Poppins',
-                                          ),
-                                        ),
-                                        Text(
-                                          formatTime(_weather?.sunrise),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Icon(Icons.nightlight_round,
-                                            color: Colors.orange[300],
-                                            size: 50),
-                                        const Text(
-                                          "Pôr do Sol",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20),
-                                        ),
-                                        Text(
-                                          formatTime(_weather?.sunset),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
