@@ -6,6 +6,7 @@
     
     <application
         android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:label="cloudcheck"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
@@ -47,5 +48,6 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <package android:name="com.example.otherapp" />
     </queries>
 </manifest>

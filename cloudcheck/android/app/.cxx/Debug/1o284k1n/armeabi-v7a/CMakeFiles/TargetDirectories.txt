@@ -1,0 +1,2 @@
+C:/Users/estagio02.ti/Desktop/cloudcheck/cloudcheck/android/app/.cxx/Debug/1o284k1n/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/estagio02.ti/Desktop/cloudcheck/cloudcheck/android/app/.cxx/Debug/1o284k1n/armeabi-v7a/CMakeFiles/rebuild_cache.dir

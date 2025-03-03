@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class WeatherService {
   static const String _baseUrl =
-      'http://api.openweathermap.org/data/2.5/weather';
+      'https://api.openweathermap.org/data/2.5/weather';
   final String apiKey = 'ad9118a78368c943a0d798c5fad402e3';
 
   Future<Map<String, dynamic>> fetchWeather(String cityName) async {
@@ -16,6 +16,7 @@ class WeatherService {
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
+      print('Failed to load weather data: ${response.body}');
       throw Exception('Falha ao carregar os dados do clima.');
     }
   }
@@ -30,7 +31,9 @@ class WeatherService {
     }
 
     Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+      locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+      ),
     );
 
     List<Placemark> placemarks =

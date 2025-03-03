@@ -26,6 +26,8 @@ class _StartHomeState extends State<StartHome> {
   Future<void> _fetchWeather() async {
     try {
       String city = await _weatherService.getCurrentCity();
+      print('Current city: $city');
+
       final weatherData = await _weatherService.fetchWeather(city);
 
       setState(() {
@@ -34,8 +36,9 @@ class _StartHomeState extends State<StartHome> {
       });
     } catch (e) {
       setState(() {
+        print("Erro de requisição: $e");
+        _errorMessage = "Erro na requisição.";
         _isLoading = false;
-        _errorMessage = "Erro ao carregar dados. Verifique sua conexão.";
       });
     }
   }
